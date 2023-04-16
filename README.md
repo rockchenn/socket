@@ -207,6 +207,14 @@ in_addr_t inet_addr(const char *cp)
 
 > INADDR_NODE = 0xFFFFFFFF (32 個 bits 全部填一)
 
+但是，如果是遇到255.255.255.255（broadcast）這個合法的地址，用`uint32_t`來表示也是`0xFFFFFFFF`。
+
+這函式的回傳設計並沒有辦法讓我們區分，是真的不合法，還是只是遇到broadcast。
+
+所以，man page建議使用`inet_aton`， `inet_pton`， `getaddrinfo`。
+
+> Use of this function is problematic because -1 is a valid address (255.255.255.255). Avoid its use in favor  of  inet_aton(),  inet_pton(3),  or  getaddrinfo(3), which provide a cleaner way to indicate error return.
+
 [範例程式: inet_addr_ex.c](https://github.com/davidleitw/socket/blob/master/address/inet_addr_ex.c)
 
 ### inet_aton
