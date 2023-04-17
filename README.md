@@ -320,9 +320,13 @@ if (socket_fd < 0) {
 }
     
 // 地址資訊
+// htonl和htons的目的都是為了將host byte order轉成network byte order，差異只是前者轉換unsigned int，而後者是unsigned short
+// host byte order取決於cpu是little endian或big endian，而network byte order規定是big endian，所以才需要轉換
+// 注意這邊INADDR_ANY最好也要加上htonl的轉換，即使INADDR_ANY（0.0.0.0）透過htonl轉換前後不會有差異，但為了一致性建議要加
+// 可以參考 https://stackoverflow.com/questions/6081892/does-sin-addr-s-addr-inaddr-any-need-htonl-at-all
 struct sockaddr_in serverAddr = {
     .sin_family =AF_INET,             // Ipv4
-    .sin_addr.s_addr = INADDR_ANY,    // 沒有指定 ip address
+    .sin_addr.s_addr = htonl(INADDR_ANY),    // 沒有指定 ip address
     .sin_port = htons(12000)          // 綁定 port 12000
 };
 
@@ -452,7 +456,7 @@ if (socket_fd < 0){
 // server 地址
 struct sockaddr_in serverAddr = {
     .sin_family = AF_INET,           
-    .sin_addr.s_addr = INADDR_ANY,
+    .sin_addr.s_addr = htonl(INADDR_ANY),
     .sin_port = htons(serverPort)
 };
 
@@ -714,7 +718,7 @@ if (socket_fd < 0){
 // server 地址
 struct sockaddr_in serverAddr = {
     .sin_family = AF_INET,
-    .sin_addr.s_addr = INADDR_ANY,
+    .sin_addr.s_addr = htonl(INADDR_ANY),
     .sin_port = htons(serverPort)
 };
 
